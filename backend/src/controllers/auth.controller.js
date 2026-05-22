@@ -1,6 +1,8 @@
+import emailNotification from "../emails/emailHandlers.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js"
 import bcrypt from "bcryptjs"
+
 export const signup = async (req, res) => {
     const {fullName, email, password} = req.body;
     try {
@@ -31,8 +33,10 @@ export const signup = async (req, res) => {
             password: hashedPassword
         })
         if(newUser){
-            generateToken(newUser._id, res);
-            await newUser.save()
+            const savedUser = await newUser.save()
+            generateToken(savedUser._id, res);
+            
+            await emailNotification(newUser.fullName, newUser.email); //third parameter should be app link.
 
             res.status(201).json({
                 _id: newUser._id,
@@ -40,6 +44,7 @@ export const signup = async (req, res) => {
                 email:newUser.email,
                 profilePic: newUser.profilePic,
             })
+
         }
         else{
             res.status(400).json({message: "Invalid user data"})
