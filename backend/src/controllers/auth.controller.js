@@ -103,8 +103,6 @@ export const updateProfile = async (req, res) => {
         ).select("-password");
         res.status(200).json(updatedUser);
 
-
-
     } catch (error) {
         console.log("Error in updating profile pic:", error)
         res.status(500).json({message: "Internal server error!"})
