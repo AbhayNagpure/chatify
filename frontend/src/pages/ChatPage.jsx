@@ -1,4 +1,4 @@
-import { useAuthStore } from "../store/userAuthStore";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 function ChatPage() {
   const { logout } = useAuthStore();
