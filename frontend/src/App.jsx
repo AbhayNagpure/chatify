@@ -3,7 +3,7 @@ import ChatPage from "./pages/ChatPage.jsx"
 import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
 import { useEffect } from "react"
-import { useAuthStore } from "./store/userAuthStore.js"
+import { useAuthStore } from "./store/useAuthStore.js"
 import PageLoader from "./components/PageLoader.jsx"
 import { Toaster } from "react-hot-toast"
 

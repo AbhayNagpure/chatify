@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { Mail, Lock, MessageSquare, Loader2 } from "lucide-react";
-import { useAuthStore } from "../store/userAuthStore";
+import { useAuthStore } from "../store/useAuthStore.js";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
