@@ -1,4 +1,6 @@
-import { Users, MessageCircle, Search } from "lucide-react";
+import { useRef} from "react";
+import { Users, MessageCircle, Search, Camera, Loader2 } from "lucide-react";
+import { useAuthStore } from "../../store/useAuthStore";
 
 function SidebarHeader({
   authUser,
@@ -7,6 +9,20 @@ function SidebarHeader({
   searchQuery,
   setSearchQuery,
 }) {
+  const { updateProfile, isUpdatingProfile } = useAuthStore();
+  const fileInputRef = useRef(null);
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      const base64Image = reader.result;
+      await updateProfile({ profilePic: base64Image });
+    };
+  };
+
   return (
     <div className="p-4 pb-3">
       <div className="flex items-center justify-between mb-4">
@@ -14,7 +30,20 @@ function SidebarHeader({
         <div className="flex items-center gap-2">
           {/* User Avatar */}
           <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-slate-800/50">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-orange-500 to-emerald-500 flex items-center justify-center text-[11px] font-bold text-white overflow-hidden">
+            <div 
+              className="relative w-8 h-8 flex-shrink-0 rounded-full bg-gradient-to-br from-orange-500 to-emerald-500 flex items-center justify-center text-[12px] font-bold text-white overflow-hidden cursor-pointer group ring-1 ring-white/10 hover:ring-orange-500/50 transition-all"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {isUpdatingProfile ? (
+                <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                </div>
+              ) : (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <Camera className="w-3.5 h-3.5 text-white/90" />
+                </div>
+              )}
+              
               {authUser?.profilePic ? (
                 <img
                   src={authUser.profilePic}
@@ -25,6 +54,16 @@ function SidebarHeader({
                 authUser?.fullName?.charAt(0)?.toUpperCase() || "U"
               )}
             </div>
+
+            <input 
+              type="file" 
+              className="hidden" 
+              ref={fileInputRef} 
+              accept="image/*"
+              onChange={handleImageUpload} 
+              disabled={isUpdatingProfile}
+            />
+
             <span className="text-xs text-slate-300 font-medium hidden sm:block max-w-[80px] truncate">
               {authUser?.fullName}
             </span>

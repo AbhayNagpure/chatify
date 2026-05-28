@@ -2,6 +2,7 @@ import emailNotification from "../emails/emailHandlers.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/User.js"
 import bcrypt from "bcryptjs"
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
     const {fullName, email, password} = req.body;
@@ -89,7 +90,7 @@ export const logout = (_ , res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const profilePic = req.body;
+        const { profilePic } = req.body;
         if(!profilePic) return res.status(400).json({message: "Profile pic is required!"})
         
         const userId = req.user._id;
@@ -104,7 +105,8 @@ export const updateProfile = async (req, res) => {
         res.status(200).json(updatedUser);
 
     } catch (error) {
-        console.log("Error in updating profile pic:", error)
+        console.log("Error in updating profile pic:", error);
+        import('fs').then(fs => fs.writeFileSync('cloudinary-error.log', JSON.stringify(error, Object.getOwnPropertyNames(error), 2)));
         res.status(500).json({message: "Internal server error!"})
     }
 }
