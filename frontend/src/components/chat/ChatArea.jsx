@@ -14,6 +14,7 @@ function ChatArea() {
     setSelectedUser,
     isSoundEnabled,
     getMessagesByUserId,
+    sendMessage,
   } = useChatStore();
 
   const { authUser } = useAuthStore();
@@ -22,9 +23,15 @@ function ChatArea() {
 
   // Auto-scroll to bottom on new messages and play notification sound
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const isNewMessage = messages.length > prevMessagesLength.current;
+
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ 
+        behavior: isNewMessage && prevMessagesLength.current > 0 ? "smooth" : "auto" 
+      });
+    }, 50);
     
-    if (messages.length > prevMessagesLength.current && isSoundEnabled) {
+    if (isNewMessage && isSoundEnabled) {
       const audio = new Audio('/sounds/notification.mp3');
       audio.volume = 0.5;
       audio.play().catch(e => console.log("Audio play failed:", e));
@@ -32,9 +39,12 @@ function ChatArea() {
     prevMessagesLength.current = messages.length;
   }, [messages, isSoundEnabled]);
 
-  const handleSendMessage = ({ text, image }) => {
-    // This will be wired to the store's sendMessage later
-    console.log("Send message:", { text, image });
+  const handleSendMessage = async ({ text, image }) => {
+    try {
+      await sendMessage({ text, image });
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    }
   };
 
   // Fetch messages when a user is selected
@@ -60,6 +70,7 @@ function ChatArea() {
         messages={messages}
         isMessagesLoading={isMessagesLoading}
         authUser={authUser}
+        selectedUser={selectedUser}
         ref={messagesEndRef}
       />
 
