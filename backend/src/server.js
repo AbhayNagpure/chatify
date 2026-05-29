@@ -1,16 +1,14 @@
-
 import { ENV } from "./lib/env.js";
-import express from "express"; // this will work if you change "type": "module" in package.json
+import express from "express"; 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import path from "path";
 import {connectDB} from "./lib/db.js"
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { app, server } from "./lib/socket.js";
 
-const app = express()                                          //create an express 'application instance'
 const __dirname = path.resolve()
-
 const PORT =ENV.PORT || 3000
 app.use(express.json({ limit: "10mb" }))                                       //MIDDLEWARE: parse JSON request bodies.
 app.use(cookieParser())
@@ -27,7 +25,7 @@ if(ENV.NODE_ENV === "production"){
     })
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
     connectDB()
 })

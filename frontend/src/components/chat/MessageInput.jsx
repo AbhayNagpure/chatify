@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Image, X, Loader2 } from "lucide-react";
 import { useChatStore } from "../../store/useChatStore";
+import toast from "react-hot-toast";
 
 function MessageInput({ onSendMessage, isSending }) {
   const { isSoundEnabled } = useChatStore();
@@ -32,7 +33,10 @@ function MessageInput({ onSendMessage, isSending }) {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) return;
+    if (!file.type.startsWith("image/")){
+      toast.error("Please select an image file");
+    }
+    
 
     const reader = new FileReader();
     reader.onloadend = () => {

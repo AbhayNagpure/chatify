@@ -19,8 +19,29 @@ function App() {
   }, [checkAuth])
 
   useEffect(() => {
-    const handleMouseClick = () => {
+    const handleMouseClick = (e) => {
       if (!isSoundEnabled) return;
+
+      // Check if the clicked element or its parent is interactive
+      const isInteractive = e.target.closest(
+        'button, a, input, select, textarea, [role="button"], [role="link"], label, .cursor-pointer'
+      );
+
+      // Fallback: check if the element or its immediate parents have a pointer cursor
+      let isPointer = false;
+      let el = e.target;
+      // Only traverse up a few levels to avoid performance hit on every click
+      let depth = 0;
+      while (el && el !== document.body && !isInteractive && !isPointer && depth < 3) {
+        if (window.getComputedStyle(el).cursor === 'pointer') {
+          isPointer = true;
+        }
+        el = el.parentElement;
+        depth++;
+      }
+
+      if (!isInteractive && !isPointer) return;
+
       const audio = new Audio('/sounds/mouse-click.mp3');
       audio.volume = 0.5;
       audio.play().catch(e => console.log("Audio play failed:", e));
