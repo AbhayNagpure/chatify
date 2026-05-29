@@ -124,7 +124,7 @@ function LoginPage() {
           {/* 3D Illustration */}
           <div className="relative z-10 w-full max-w-[280px] mb-8 drop-shadow-2xl hover:scale-105 transition-transform duration-700 ease-out">
             <img 
-              src="/signup_illustration.png" 
+              src="login.png" 
               alt="Chat Illustration" 
               className="w-full h-auto object-contain"
             />
