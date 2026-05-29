@@ -1,11 +1,29 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Image, X, Loader2 } from "lucide-react";
+import { useChatStore } from "../../store/useChatStore";
 
 function MessageInput({ onSendMessage, isSending }) {
+  const { isSoundEnabled } = useChatStore();
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const textInputRef = useRef(null);
+
+  const handleKeyDown = (e) => {
+    if (!isSoundEnabled) return;
+    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Tab', 'Enter', 'Backspace', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Escape'].includes(e.key)) return;
+    
+    const keystrokes = [
+      '/sounds/keystroke1.mp3',
+      '/sounds/keystroke2.mp3',
+      '/sounds/keystroke3.mp3',
+      '/sounds/keystroke4.mp3',
+    ];
+    const randomKeystroke = keystrokes[Math.floor(Math.random() * keystrokes.length)];
+    const audio = new Audio(randomKeystroke);
+    audio.volume = 0.5;
+    audio.play().catch(err => console.log("Audio play failed:", err));
+  };
 
   useEffect(() => {
     textInputRef.current?.focus();
@@ -80,6 +98,7 @@ function MessageInput({ onSendMessage, isSending }) {
           placeholder="Type a message..."
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="flex-1 py-2.5 px-4 text-sm text-white bg-slate-950/50 border border-slate-700/30 rounded-xl focus:border-orange-500/40 focus:ring-1 focus:ring-orange-500/30 focus:outline-none placeholder:text-slate-600 transition-all"
         />
 

@@ -1,6 +1,7 @@
 import { useRef} from "react";
-import { Users, MessageCircle, Search, Camera, Loader2 } from "lucide-react";
+import { Users, MessageCircle, Search, Camera, Loader2, Volume2, VolumeX } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
 
 function SidebarHeader({
   authUser,
@@ -10,6 +11,7 @@ function SidebarHeader({
   setSearchQuery,
 }) {
   const { updateProfile, isUpdatingProfile } = useAuthStore();
+  const { isSoundEnabled, toggleSound } = useChatStore();
   const fileInputRef = useRef(null);
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -28,6 +30,14 @@ function SidebarHeader({
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-bold text-white tracking-tight">Chatify</h2>
         <div className="flex items-center gap-2">
+          {/* Sound Toggle */}
+          <button 
+            onClick={toggleSound}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all"
+            title={isSoundEnabled ? "Mute sounds" : "Enable sounds"}
+          >
+            {isSoundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          </button>
           {/* User Avatar */}
           <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-slate-800/50">
             <div 

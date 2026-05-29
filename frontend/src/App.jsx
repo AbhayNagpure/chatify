@@ -4,17 +4,31 @@ import LoginPage from "./pages/LoginPage"
 import SignupPage from "./pages/SignupPage"
 import { useEffect } from "react"
 import { useAuthStore } from "./store/useAuthStore.js"
+import { useChatStore } from "./store/useChatStore.js"
 import PageLoader from "./components/PageLoader.jsx"
 import { Toaster } from "react-hot-toast"
 
 function App() {
 
   const {checkAuth, isCheckingAuth, authUser} = useAuthStore()
+  const { isSoundEnabled } = useChatStore()
 
   useEffect(() => {
     checkAuth();
     
   }, [checkAuth])
+
+  useEffect(() => {
+    const handleMouseClick = () => {
+      if (!isSoundEnabled) return;
+      const audio = new Audio('/sounds/mouse-click.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(e => console.log("Audio play failed:", e));
+    };
+    
+    document.addEventListener('mousedown', handleMouseClick);
+    return () => document.removeEventListener('mousedown', handleMouseClick);
+  }, [isSoundEnabled])
 
   console.log(authUser);
 
