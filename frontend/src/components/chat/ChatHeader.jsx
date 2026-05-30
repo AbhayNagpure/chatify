@@ -17,17 +17,11 @@ function ChatHeader({ selectedUser, setSelectedUser, onlineUsers }) {
       <div className="flex items-center flex-1 gap-3">
         <div className="relative flex-shrink-0">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-sm font-bold text-white overflow-hidden ring-2 ring-slate-700/50">
-            {selectedUser.profilePic ? (
-              <img
-                src={selectedUser.profilePic}
-                alt={selectedUser.fullName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="bg-gradient-to-br from-orange-400 to-emerald-400 bg-clip-text text-transparent">
-                {selectedUser.fullName?.charAt(0)?.toUpperCase()}
-              </span>
-            )}
+            <img
+              src={selectedUser.profilePic || "/avatar.png"}
+              alt={selectedUser.fullName}
+              className="w-full h-full object-cover"
+            />
           </div>
           {isOnline && (
             <div className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-slate-900"></div>

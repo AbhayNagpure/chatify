@@ -29,17 +29,12 @@ const MessageList = forwardRef(
               {messages.map((message) => {
                 const isOwn = message.senderId === authUser?._id;
                 const profilePic = isOwn ? authUser?.profilePic : selectedUser?.profilePic;
-                const fallbackInitial = isOwn ? authUser?.fullName?.charAt(0) : selectedUser?.fullName?.charAt(0);
 
                 return (
                   <div key={message._id} className={`chat ${isOwn ? "chat-end" : "chat-start"}`}>
                     <div className="chat-image avatar">
                       <div className="w-9 h-9 rounded-full border border-slate-700 bg-slate-800 flex items-center justify-center text-slate-300 overflow-hidden">
-                        {profilePic ? (
-                          <img src={profilePic} alt="profile" className="object-cover w-full h-full" />
-                        ) : (
-                          <span className="text-xs font-semibold">{fallbackInitial?.toUpperCase()}</span>
-                        )}
+                        <img src={profilePic || "/avatar.png"} alt="profile" className="object-cover w-full h-full" />
                       </div>
                     </div>
                     <div

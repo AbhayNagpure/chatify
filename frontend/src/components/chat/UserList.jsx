@@ -41,17 +41,11 @@ function UserList({
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-sm font-bold text-white overflow-hidden ring-2 ring-slate-700/50">
-                {user.profilePic ? (
-                  <img
-                    src={user.profilePic}
-                    alt={user.fullName}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="bg-gradient-to-br from-orange-400 to-emerald-400 bg-clip-text text-transparent">
-                    {user.fullName?.charAt(0)?.toUpperCase()}
-                  </span>
-                )}
+                <img
+                  src={user.profilePic || "/avatar.png"}
+                  alt={user.fullName}
+                  className="w-full h-full object-cover"
+                />
               </div>
               {/* Online indicator - placeholder */}
               {onlineUsers?.includes(user._id) && (
