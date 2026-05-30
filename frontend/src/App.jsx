@@ -11,12 +11,20 @@ import { Toaster } from "react-hot-toast"
 function App() {
 
   const {checkAuth, isCheckingAuth, authUser} = useAuthStore()
-  const { isSoundEnabled } = useChatStore()
+  const { isSoundEnabled, subscribeToMessage, unsubscribeFromMessages } = useChatStore()
 
   useEffect(() => {
     checkAuth();
-    
   }, [checkAuth])
+
+  useEffect(() => {
+    if (authUser) {
+      subscribeToMessage();
+    }
+    return () => {
+      unsubscribeFromMessages();
+    };
+  }, [authUser, subscribeToMessage, unsubscribeFromMessages])
 
   useEffect(() => {
     const handleMouseClick = (e) => {

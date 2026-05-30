@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+import { useChatStore } from "../../store/useChatStore";
 
 function UserList({
   isUsersLoading,
@@ -9,6 +10,8 @@ function UserList({
   setSelectedUser,
   onlineUsers,
 }) {
+  const { unreadMessages } = useChatStore();
+
   return (
     <div className="flex-1 overflow-y-auto px-2 pb-2 scrollbar-thin">
       {isUsersLoading ? (
@@ -55,15 +58,22 @@ function UserList({
 
             {/* User Info */}
             <div className="flex-1 min-w-0 text-left">
-              <p
-                className={`text-sm font-medium truncate ${
-                  selectedUser?._id === user._id
-                    ? "text-orange-300"
-                    : "text-white group-hover:text-slate-100"
-                }`}
-              >
-                {user.fullName}
-              </p>
+              <div className="flex justify-between items-center gap-1">
+                <p
+                  className={`text-sm font-medium truncate ${
+                    selectedUser?._id === user._id
+                      ? "text-orange-300"
+                      : "text-white group-hover:text-slate-100"
+                  }`}
+                >
+                  {user.fullName}
+                </p>
+                {unreadMessages[user._id] > 0 && (
+                  <span className="bg-orange-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">
+                    {unreadMessages[user._id]} new message{unreadMessages[user._id] > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
               <p className="text-[11px] text-slate-500 truncate">
                 {user.lastMessage || "Start a conversation"}
               </p>
