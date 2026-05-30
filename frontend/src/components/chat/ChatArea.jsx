@@ -12,7 +12,6 @@ function ChatArea() {
     messages,
     isMessagesLoading,
     setSelectedUser,
-    isSoundEnabled,
     getMessagesByUserId,
     sendMessage,
     subscribeToMessage,

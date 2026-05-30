@@ -70,7 +70,7 @@ export const useChatStore = create((set, get) => ({
     },
 
     subscribeToMessage: () => {
-        const { selectedUser, isSoundEnabled } = get();
+        const { selectedUser } = get();
         if(!selectedUser) return;
 
         const socket = useAuthStore.getState().socket;
