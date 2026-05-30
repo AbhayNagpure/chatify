@@ -7,6 +7,7 @@ function UserList({
   activeTab,
   selectedUser,
   setSelectedUser,
+  onlineUsers,
 }) {
   return (
     <div className="flex-1 overflow-y-auto px-2 pb-2 scrollbar-thin">
@@ -53,7 +54,7 @@ function UserList({
                 )}
               </div>
               {/* Online indicator - placeholder */}
-              {user.isOnline && (
+              {onlineUsers?.includes(user._id) && (
                 <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-slate-900"></div>
               )}
             </div>

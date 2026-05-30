@@ -17,7 +17,7 @@ function ChatArea() {
     sendMessage,
   } = useChatStore();
 
-  const { authUser } = useAuthStore();
+  const { authUser, onlineUsers } = useAuthStore();
   const messagesEndRef = useRef(null);
   const prevMessagesLength = useRef(messages.length);
 
@@ -64,6 +64,7 @@ function ChatArea() {
       <ChatHeader
         selectedUser={selectedUser}
         setSelectedUser={setSelectedUser}
+        onlineUsers={onlineUsers}
       />
 
       <MessageList

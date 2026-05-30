@@ -18,7 +18,7 @@ function Sidebar() {
     getMyChatPartners,
   } = useChatStore();
 
-  const { authUser, logout } = useAuthStore();
+  const { authUser, logout, onlineUsers } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -52,6 +52,7 @@ function Sidebar() {
         activeTab={activeTab}
         selectedUser={selectedUser}
         setSelectedUser={setSelectedUser}
+        onlineUsers={onlineUsers}
       />
 
       {/* Logout Button */}
