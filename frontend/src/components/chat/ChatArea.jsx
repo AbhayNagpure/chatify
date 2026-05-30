@@ -15,13 +15,15 @@ function ChatArea() {
     isSoundEnabled,
     getMessagesByUserId,
     sendMessage,
+    subscribeToMessage,
+    unsubscribeFromMessages,
   } = useChatStore();
 
   const { authUser, onlineUsers } = useAuthStore();
   const messagesEndRef = useRef(null);
   const prevMessagesLength = useRef(messages.length);
 
-  // Auto-scroll to bottom on new messages and play notification sound
+  // Auto-scroll to bottom on new messages
   useEffect(() => {
     const isNewMessage = messages.length > prevMessagesLength.current;
 
@@ -31,13 +33,8 @@ function ChatArea() {
       });
     }, 50);
     
-    if (isNewMessage && isSoundEnabled) {
-      const audio = new Audio('/sounds/notification.mp3');
-      audio.volume = 0.5;
-      audio.play().catch(e => console.log("Audio play failed:", e));
-    }
     prevMessagesLength.current = messages.length;
-  }, [messages, isSoundEnabled]);
+  }, [messages]);
 
   const handleSendMessage = async ({ text, image }) => {
     try {
@@ -51,8 +48,12 @@ function ChatArea() {
   useEffect(() => {
     if (selectedUser?._id) {
       getMessagesByUserId(selectedUser._id);
+      subscribeToMessage();
     }
-  }, [selectedUser?._id, getMessagesByUserId]);
+    return () => {
+      unsubscribeFromMessages();
+    };
+  }, [selectedUser?._id, getMessagesByUserId, subscribeToMessage, unsubscribeFromMessages]);
 
   // No user selected state
   if (!selectedUser) {

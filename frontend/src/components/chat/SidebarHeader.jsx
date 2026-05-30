@@ -54,15 +54,11 @@ function SidebarHeader({
                 </div>
               )}
               
-              {authUser?.profilePic ? (
-                <img
-                  src={authUser.profilePic}
-                  alt="avatar"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                authUser?.fullName?.charAt(0)?.toUpperCase() || "U"
-              )}
+              <img
+                src={authUser?.profilePic || "/avatar.png"}
+                alt="avatar"
+                className="w-full h-full object-cover"
+              />
             </div>
 
             <input 
