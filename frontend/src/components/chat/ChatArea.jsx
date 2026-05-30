@@ -14,8 +14,6 @@ function ChatArea() {
     setSelectedUser,
     getMessagesByUserId,
     sendMessage,
-    subscribeToMessage,
-    unsubscribeFromMessages,
   } = useChatStore();
 
   const { authUser, onlineUsers } = useAuthStore();
@@ -47,12 +45,8 @@ function ChatArea() {
   useEffect(() => {
     if (selectedUser?._id) {
       getMessagesByUserId(selectedUser._id);
-      subscribeToMessage();
     }
-    return () => {
-      unsubscribeFromMessages();
-    };
-  }, [selectedUser?._id, getMessagesByUserId, subscribeToMessage, unsubscribeFromMessages]);
+  }, [selectedUser?._id, getMessagesByUserId]);
 
   // No user selected state
   if (!selectedUser) {

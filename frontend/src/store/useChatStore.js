@@ -9,6 +9,7 @@ export const useChatStore = create((set, get) => ({
     allContacts: [],
     chats: [],
     messages: [],
+    unreadMessages: {},
     activeTab: "chat",
     selectedUser: null,
     isUsersLoading: false,
@@ -21,7 +22,18 @@ export const useChatStore = create((set, get) => ({
     },
 
     setActiveTab: (tab) => set({activeTab: tab}),
-    setSelectedUser: (selectedUser) => set({selectedUser}),
+    setSelectedUser: (selectedUser) => {
+        set({selectedUser});
+        // Clear unread messages for this user when selected
+        if (selectedUser) {
+            const { unreadMessages } = get();
+            if (unreadMessages[selectedUser._id]) {
+                const newUnread = { ...unreadMessages };
+                delete newUnread[selectedUser._id];
+                set({ unreadMessages: newUnread });
+            }
+        }
+    },
 
     getAllContacts: async() => {
         set({isUsersLoading: true});
@@ -70,31 +82,36 @@ export const useChatStore = create((set, get) => ({
     },
 
     subscribeToMessage: () => {
-        const { selectedUser } = get();
-        if(!selectedUser) return;
-
         const socket = useAuthStore.getState().socket;
+        if (!socket) return;
+        
+        // Remove existing listener to prevent duplicates
+        socket.off("newMessage");
 
         socket.on("newMessage", (newMessage) => {
             const isMessageSentFromSelectedUser = newMessage.senderId === get().selectedUser?._id;
-            if(!isMessageSentFromSelectedUser) return;
             
-            const currentMessages = get().messages
-            set({messages: [...currentMessages, newMessage]})
-
             if(get().isSoundEnabled){
                 const notificationSound = new Audio("/sounds/notification.mp3");
                 notificationSound.currentTime = 0; //reset to start 
                 notificationSound.play().catch((e) => console.log("Audio play failed:", e));
             }
 
+            if(isMessageSentFromSelectedUser) {
+                const currentMessages = get().messages;
+                set({messages: [...currentMessages, newMessage]});
+            } else {
+                // Add to unread messages
+                const { unreadMessages } = get();
+                const count = unreadMessages[newMessage.senderId] || 0;
+                set({ unreadMessages: { ...unreadMessages, [newMessage.senderId]: count + 1 } });
+            }
         })
     },
 
     unsubscribeFromMessages: () => {
-
         const socket = useAuthStore.getState().socket;
-        socket.off("newMessage");
+        if (socket) socket.off("newMessage");
     }
 
 
