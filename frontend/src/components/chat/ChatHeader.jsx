@@ -1,6 +1,8 @@
 import { ArrowLeft, Phone, Video, MoreVertical } from "lucide-react";
 
-function ChatHeader({ selectedUser, setSelectedUser }) {
+function ChatHeader({ selectedUser, setSelectedUser, onlineUsers }) {
+  const isOnline = onlineUsers?.includes(selectedUser._id);
+
   return (
     <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-slate-900/30 backdrop-blur-sm">
       {/* Back button on mobile */}
@@ -27,7 +29,7 @@ function ChatHeader({ selectedUser, setSelectedUser }) {
               </span>
             )}
           </div>
-          {selectedUser.isOnline && (
+          {isOnline && (
             <div className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-slate-900"></div>
           )}
         </div>
@@ -36,7 +38,7 @@ function ChatHeader({ selectedUser, setSelectedUser }) {
             {selectedUser.fullName}
           </h3>
           <p className="text-[11px] text-slate-500">
-            {selectedUser.isOnline ? "Online" : "Offline"}
+            {isOnline ? "Online" : "Offline"}
           </p>
         </div>
       </div>
