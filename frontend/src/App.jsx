@@ -65,7 +65,7 @@ function App() {
 
   return ( 
 
-    <div className="min-h-screen relative w-full bg-slate-950 text-white">
+    <div className="h-[100dvh] relative w-full bg-slate-950 text-white overflow-hidden">
       {/* Modern Dark Grid Colored Background */}
       <div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px]">
         {/* Top-left Orange Glow */}

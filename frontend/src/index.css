@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+}
+
 /* Custom scrollbar for chat areas */
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px;

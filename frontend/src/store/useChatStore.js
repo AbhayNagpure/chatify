@@ -75,6 +75,7 @@ export const useChatStore = create((set, get) => ({
        
         try {
             const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
+            console.log("SEND MESSAGE RESPONSE:", res.data);
             set({messages: [...messages, res.data]});
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to send message");
@@ -89,7 +90,7 @@ export const useChatStore = create((set, get) => ({
         socket.off("newMessage");
 
         socket.on("newMessage", (newMessage) => {
-            const isMessageSentFromSelectedUser = newMessage.senderId === get().selectedUser?._id;
+            const isMessageSentFromSelectedUser = String(newMessage.senderId) === String(get().selectedUser?._id);
             
             if(get().isSoundEnabled){
                 const notificationSound = new Audio("/sounds/notification.mp3");

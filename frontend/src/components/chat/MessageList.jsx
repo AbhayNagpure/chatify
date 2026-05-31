@@ -27,7 +27,8 @@ const MessageList = forwardRef(
             <div className="flex-1"></div>
             <div className="space-y-4 w-full">
               {messages.map((message) => {
-                const isOwn = message.senderId === authUser?._id;
+                console.log("Message:", message, "AuthUser:", authUser);
+                const isOwn = String(message.senderId) === String(authUser?._id);
                 const profilePic = isOwn ? authUser?.profilePic : selectedUser?.profilePic;
 
                 return (
