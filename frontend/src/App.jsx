@@ -75,7 +75,7 @@ function App() {
       </div>
       
       {/* Main Content */}
-      <div className="relative z-10 w-full min-h-screen">
+      <div className="relative z-10 w-full h-full">
         <Routes>
           <Route path="/" element={authUser ? <ChatPage /> : <Navigate to={"/login"} /> } />
           <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />} />
