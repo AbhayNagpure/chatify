@@ -20,17 +20,23 @@ function ChatArea() {
   const messagesEndRef = useRef(null);
   const prevMessagesLength = useRef(messages.length);
 
-  // Auto-scroll to bottom on new messages
+  // Auto-scroll to bottom on new messages and window resize (keyboard opening)
   useEffect(() => {
-    const isNewMessage = messages.length > prevMessagesLength.current;
+    const scrollToBottom = (behavior = "auto") => {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior });
+      }, 50);
+    };
 
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ 
-        behavior: isNewMessage && prevMessagesLength.current > 0 ? "smooth" : "auto" 
-      });
-    }, 50);
-    
+    const isNewMessage = messages.length > prevMessagesLength.current;
+    scrollToBottom(isNewMessage && prevMessagesLength.current > 0 ? "smooth" : "auto");
     prevMessagesLength.current = messages.length;
+
+    // Handle mobile keyboard opening
+    const handleResize = () => scrollToBottom("auto");
+    window.addEventListener("resize", handleResize);
+    
+    return () => window.removeEventListener("resize", handleResize);
   }, [messages]);
 
   const handleSendMessage = async ({ text, image }) => {

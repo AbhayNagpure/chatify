@@ -59,7 +59,7 @@ function MessageInput({ onSendMessage, isSending }) {
   };
 
   return (
-    <div className="p-3 border-t border-white/5">
+    <div className="p-3 border-t border-white/5 flex-shrink-0 z-10 bg-slate-900/50 backdrop-blur-md">
       {/* Image Preview */}
       {imagePreview && (
         <div className="relative inline-block mb-3">

@@ -4,7 +4,7 @@ function ChatHeader({ selectedUser, setSelectedUser, onlineUsers }) {
   const isOnline = onlineUsers?.includes(selectedUser._id);
 
   return (
-    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-slate-900/30 backdrop-blur-sm">
+    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/5 bg-slate-900/30 backdrop-blur-md flex-shrink-0 z-10">
       {/* Back button on mobile */}
       <button
         onClick={() => setSelectedUser(null)}
