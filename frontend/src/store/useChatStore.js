@@ -77,6 +77,17 @@ export const useChatStore = create((set, get) => ({
             const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`, messageData);
             console.log("SEND MESSAGE RESPONSE:", res.data);
             set({messages: [...messages, res.data]});
+
+            // Move selectedUser to top of chats
+            const { chats } = get();
+            const existingChatIndex = chats.findIndex(c => String(c._id) === String(selectedUser._id));
+            if (existingChatIndex !== -1) {
+                const newChats = [...chats];
+                const [chat] = newChats.splice(existingChatIndex, 1);
+                set({ chats: [chat, ...newChats] });
+            } else {
+                get().getMyChatPartners();
+            }
         } catch (error) {
             toast.error(error.response?.data?.message || "Failed to send message");
         }
@@ -106,6 +117,25 @@ export const useChatStore = create((set, get) => ({
                 const { unreadMessages } = get();
                 const count = unreadMessages[newMessage.senderId] || 0;
                 set({ unreadMessages: { ...unreadMessages, [newMessage.senderId]: count + 1 } });
+            }
+
+            // Move sender to top of chats, or add if new
+            const { chats, allContacts } = get();
+            const partnerId = newMessage.senderId;
+            const existingChatIndex = chats.findIndex(c => String(c._id) === String(partnerId));
+            
+            if (existingChatIndex !== -1) {
+                const newChats = [...chats];
+                const [chat] = newChats.splice(existingChatIndex, 1);
+                set({ chats: [chat, ...newChats] });
+            } else {
+                // New chat partner, fetch from allContacts or backend
+                const contact = allContacts.find(c => String(c._id) === String(partnerId));
+                if (contact) {
+                    set({ chats: [contact, ...chats] });
+                } else {
+                    get().getMyChatPartners(); // Fallback
+                }
             }
         })
     },

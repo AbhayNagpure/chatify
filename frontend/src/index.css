@@ -5,12 +5,17 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100vh; /* Fallback for older browsers */
   height: 100dvh;
   overflow: hidden;
   overscroll-behavior-y: none;
 }
 
 /* Custom scrollbar for chat areas */
+.scrollbar-thin {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(148, 163, 184, 0.3) transparent; /* Firefox */
+}
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px;
 }

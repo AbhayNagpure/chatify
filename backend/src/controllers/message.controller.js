@@ -70,30 +70,52 @@ export const sendMessage = async (req, res) => {
 
 }
 
-export const getChatPartners = async(req, res) => {
+export const getChatPartners = async (req, res) => {
     try {
         const loggedInUserId = req.user._id;
-        //find all the messages where the loggedIn user is either sender or receiver.
 
-        const messages = await Message.find({
-            $or: [{ senderId: loggedInUserId}, {receiverId: loggedInUserId}],
-        })
+        // Find the latest message for each chat partner
+        const latestMessages = await Message.aggregate([
+            {
+                $match: {
+                    $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }]
+                }
+            },
+            {
+                $sort: { createdAt: -1 } // Sort all messages by newest first
+            },
+            {
+                $group: {
+                    _id: {
+                        $cond: {
+                            if: { $eq: ["$senderId", loggedInUserId] },
+                            then: "$receiverId",
+                            else: "$senderId"
+                        }
+                    },
+                    latestMessageAt: { $first: "$createdAt" }
+                }
+            },
+            {
+                $sort: { latestMessageAt: -1 } // Sort the grouped partners by the latest message timestamp
+            }
+        ]);
 
-        const chatPartnerIds = [
-            ...new Set(
-                messages.map((msg) => 
-                    msg.senderId.toString() == loggedInUserId.toString()
-                    ? msg.receiverId.toString()
-                    : msg.senderId.toString()
-                )
-            )
-        ];
-        
-        const chatPartners = await User.find({_id: {$in: chatPartnerIds}}).select("-password")
+        const chatPartnerIds = latestMessages.map(msg => msg._id);
 
-        res.status(200).json(chatPartners)
+        // Fetch user details for the partners
+        const chatPartners = await User.find({ _id: { $in: chatPartnerIds } }).select("-password");
+
+        // Sort the fetched users to match the chronological order of chatPartnerIds
+        const sortedChatPartners = chatPartners.sort((a, b) => {
+            const indexA = chatPartnerIds.findIndex(id => id.toString() === a._id.toString());
+            const indexB = chatPartnerIds.findIndex(id => id.toString() === b._id.toString());
+            return indexA - indexB;
+        });
+
+        res.status(200).json(sortedChatPartners);
     } catch (error) {
         console.log("Error in getChatPartners controller:", error.message);
-        res.status(500).json({message: "Internal Server error"});
+        res.status(500).json({ message: "Internal Server error" });
     }
 }
